@@ -145,7 +145,9 @@ export class AudioList extends Component {
                             onClose={() => this.setState({...this.state, optionModalVisible: false})}
                             visible={this.state.optionModalVisible}
                             onPlayPress={() => console.log('Playing audio...')}
-                            onPlaylistPress={() => console.log('Adding to playlist...')}/>
+                            onPlaylistPress={() => {
+                                this.props.navigation.navigate('PlayList');
+                            }}/>
                         </Screen>
             }}
         </AudioContext.Consumer>
