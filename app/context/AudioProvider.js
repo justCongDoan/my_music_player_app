@@ -16,6 +16,8 @@ export class AudioProvider extends Component {
         super(props);
         this.state = {
             audioFiles: [],
+            playlist: [],
+            addToPlaylist: null,
             permissionError: false,
             dataProvider: new DataProvider((r1, r2) => r1 !== r2),
             playbackObj: null,
@@ -167,6 +169,8 @@ export class AudioProvider extends Component {
     render() {
         const {
             audioFiles, 
+            playlist,
+            addToPlaylist,
             dataProvider, 
             permissionError, 
             playbackObj, 
@@ -197,6 +201,8 @@ export class AudioProvider extends Component {
             <AudioContext.Provider value={
                 {
                     audioFiles, 
+                    playlist,
+                    addToPlaylist,
                     dataProvider, 
                     playbackObj, 
                     soundObj, 

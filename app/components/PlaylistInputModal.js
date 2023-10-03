@@ -1,21 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {View, StyleSheet, Text, ScrollView, TouchableOpacity, Modal, TextInput, Dimensions, TouchableWithoutFeedback} from 'react-native';
 import {AntDesign} from '@expo/vector-icons';
 import color from '../misc/color';
 
 const PlaylistInputModal = ({visible, onClose, onSubmit}) => {
+
+    const [playlistName, setPlaylistName] = useState('');
+
+    const handleOnSubmit = () => {
+        // if there's no playlist name
+        if(!playlistName.trim()) {
+            onClose();
+        }
+        else {
+            onSubmit(playlistName);
+            setPlaylistName('');
+            onClose();
+        }
+    };
+
     return (
         <Modal visible={visible} animationType='fade' transparent>
             <View style={styles.modalContainer}>
                 <View style={styles.inputContainer}>
                     <Text style={{color: color.ACTIVE_BG}}>Create new Playlist</Text>
-                    <TextInput style={styles.input}/>
+                    <TextInput 
+                        value={playlistName} 
+                        onChangeText={(text) => setPlaylistName(text)}
+                        style={styles.input}/>
                     <AntDesign 
                         name='check' 
                         size={24} 
                         color={color.ACTIVE_FONT} 
                         style={styles.submitIcon}
-                        onPress={onSubmit}/>
+                        onPress={handleOnSubmit}/>
                 </View>
             </View>
             <TouchableWithoutFeedback onPress={onClose}>

@@ -18,7 +18,7 @@ export class AudioList extends Component {
             optionModalVisible: false,
         };
 
-        this.currentItem = {}
+        this.currentItem = {};
     }
 
     layoutProvider = new LayoutProvider((i) => 'audio', (type, dim) => {
@@ -146,6 +146,9 @@ export class AudioList extends Component {
                             visible={this.state.optionModalVisible}
                             onPlayPress={() => console.log('Playing audio...')}
                             onPlaylistPress={() => {
+                                this.context.updateState(this.context, {
+                                    addToPlaylist: this.currentItem,
+                                });
                                 this.props.navigation.navigate('PlayList');
                             }}/>
                         </Screen>
