@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {View, StyleSheet, Text, Dimensions} from 'react-native';
 import Screen from '../components/Screen';
 import color from '../misc/color';
@@ -6,12 +6,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PlayerButton from '../components/PlayerButton';
 import { AudioContext } from '../context/AudioProvider';
-import { changeAudio, pause, play, playNext, resume, selectAudio } from '../misc/audioController';
+import { changeAudio, moveAudio, pause, play, playNext, resume, selectAudio } from '../misc/audioController';
 import { convertTime, storeAudioForNextOpening } from '../misc/helper';
 
 const {width} = Dimensions.get('window');
 
 const Player = () => {
+    const [currentPosition, setCurrentPosition] = useState(0);
     const context = useContext(AudioContext);
     const {playbackPosition, playbackDuration} = context;
 
@@ -163,7 +164,7 @@ const Player = () => {
                             {convertTime(context.currentAudio.duration)}
                         </Text>
                         <Text>
-                            {renderCurrentTime()}
+                            {currentPosition ? currentPosition : renderCurrentTime()}
                         </Text>
                     </View>
                     <Slider
@@ -173,6 +174,22 @@ const Player = () => {
                         value={calculateSeekBar()}
                         minimumTrackTintColor={color.FONT_MEDIUM}
                         maximumTrackTintColor={color.ACTIVE_BG}
+                        onValueChange={(value) => {
+                            setCurrentPosition(convertTime(value * context.currentAudio.duration))
+                        }}
+                        onSlidingStart={
+                            async () => {
+                                if(!context.isPlaying) return;
+                                try {
+                                    await pause(context.playbackObj);
+                                } catch (error) {
+                                    console.log('error inside onSlidingStart callback', error);
+                                }
+                            }
+                        }
+                        onSlidingComplete={
+                            async value => await moveAudio(context, value)
+                        }
                     />
                     <View style={styles.audioControllers}>
                         <PlayerButton iconType="PREV"

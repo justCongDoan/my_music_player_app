@@ -66,7 +66,7 @@ export const selectAudio = async (audio, context) => {
         // pause the audio
         if(soundObj.isLoaded && soundObj.isPlaying && currentAudio.id === audio.id) {
             const status = await pause(playbackObj);
-            return updateState(context, {soundObj: status, isPlaying: false});
+            return updateState(context, {soundObj: status, isPlaying: false, playbackPosition: status.positionMillis});
         }
 
         // resume playing audio
@@ -165,3 +165,15 @@ export const changeAudio = async (context, select) => {
         console.log('error inside change audio method.', error.message);
     }
 };
+
+export const moveAudio = async (context, value) => {
+    const {soundObj, isPlaying, playbackObj, updateState} = context;
+    if(soundObj === null || !isPlaying) return;
+    try {
+        const status = await playbackObj.setPositionAsync(Math.floor(soundObj.durationMillis * value));
+        updateState(context, {soundObj: status, playbackPosition: status.positionMillis});
+        await resume(playbackObj);
+    } catch (error) {
+        console.log('error inside onSlidingComplete callback', error);
+    }
+}
