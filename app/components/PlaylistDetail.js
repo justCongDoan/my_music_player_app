@@ -2,8 +2,12 @@ import React from "react";
 import {Text, View, StyleSheet, Modal, FlatList, Dimensions} from 'react-native';
 import color from "../misc/color";
 import AudioListItem from './AudioListItem';
+import { selectAudio } from "../misc/audioController";
 
 const PlaylistDetail = ({visible, playlist, onClose}) => {
+    const playAudio = (audio) => {
+        selectAudio(audio, );
+    };
     return (
         <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
             <View style={styles.container}>
@@ -14,7 +18,7 @@ const PlaylistDetail = ({visible, playlist, onClose}) => {
                     keyExtractor={item => item.id.toString()}
                     renderItem={({item}) => (
                         <View style={{marginBottom: 10}}>
-                            <AudioListItem title={item.filename} duration={item.duration}/>
+                            <AudioListItem title={item.filename} duration={item.duration} onAudioPress={() => playAudio(item)}/>
                         </View>
                     )}/>
             </View>

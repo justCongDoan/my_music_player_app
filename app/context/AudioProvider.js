@@ -24,6 +24,8 @@ export class AudioProvider extends Component {
             soundObj: null,
             currentAudio: {},
             isPlaying: false,
+            isPlaylistRunning: false,
+            activePlaylist: [],
             currentAudioIndex: null,
             playbackPosition: null,
             playbackDuration: null,
@@ -120,6 +122,27 @@ export class AudioProvider extends Component {
             });
         }
         if(playbackStatus.didJustFinish) {
+            if(this.state.isPlaylistRunning) {
+                let audio;
+                const indexInPlaylist = this.state.activePlaylist.audios.findIndex(({id}) => id === this.state.currentAudio.id);
+                const nextIndex = indexInPlaylist + 1;
+                audio = this.state.activePlaylist.audios[nextIndex];
+
+                // if this is the last audio
+                if(!audio) {
+                    audio = this.state.activePlaylist.audios[0]
+                }
+
+                const indexInAllList = this.state.audioFiles.findIndex(({id}) => id === audio.id);
+
+                const status = await playNext(this.state.playbackObj, audio.uri);
+                return this.updateState(this, {
+                    soundObj: status,
+                    isPlaying: true,
+                    currentAudio: audio,
+                    currentAudioIndex: indexInAllList,
+                });
+            }
             const nextAudioIndex = this.state.currentAudioIndex + 1;
             // there's no audio to play next or we're playing the last one
             if(nextAudioIndex >= this.totalAudioCount) {
@@ -179,7 +202,9 @@ export class AudioProvider extends Component {
             isPlaying, 
             currentAudioIndex,
             playbackPosition,
-            playbackDuration
+            playbackDuration,
+            isPlaylistRunning,
+            activePlaylist
         } = this.state
         if(permissionError) {
             return (
@@ -212,6 +237,8 @@ export class AudioProvider extends Component {
                     totalAudioCount: this.totalAudioCount,
                     playbackPosition,
                     playbackDuration,
+                    isPlaylistRunning,
+                    activePlaylist,
                     updateState: this.updateState, 
                     loadPreviousAudio: this.loadPreviousAudio,
                     onPlaybackStatusUpdate: this.onPlaybackStatusUpdate

@@ -150,7 +150,17 @@ const Player = () => {
     return (
         <Screen>
             <View style={styles.container}>
-                <Text style={styles.audioCount}>{`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text>
+                <View style={styles.audioCountContainer}>
+                    <View style={{flexDirection: 'row'}}>
+                        {context.isPlaylistRunning && (
+                            <>
+                                <Text style={{fontWeight: 'bold'}}>From Playlist: </Text>
+                                <Text>{context.activePlaylist.title}</Text>
+                            </>
+                        )}
+                    </View>
+                    <Text style={styles.audioCount}>{`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text>
+                </View>
                 <View style={styles.midBannerContainer}>
                     <MaterialCommunityIcons 
                         name="music-circle" 
@@ -188,7 +198,10 @@ const Player = () => {
                             }
                         }
                         onSlidingComplete={
-                            async value => await moveAudio(context, value)
+                            async value => {
+                                await moveAudio(context, value);
+                                setCurrentPosition(0);
+                            }
                         }
                     />
                     <View style={styles.audioControllers}>
@@ -215,12 +228,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingBottom: 20,
     },
+    audioCountContainer: {
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        justifyContent: 'space-between',
+    },
     container: {
         flex: 1,
     },
     audioCount: {
         textAlign: 'right',
-        padding: 15,
         color: color.FONT_LIGHT,
         fontSize: 14,
     },

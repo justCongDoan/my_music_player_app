@@ -8,7 +8,7 @@ import PlaylistDetail from '../components/PlaylistDetail';
 
 let selectedPlaylist = {};
 
-const PlayerList = () => {
+const PlayerList = ({navigation}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [showPlaylist, setShowPlaylist] = useState(false);
 
@@ -99,7 +99,9 @@ const PlayerList = () => {
 
         // if there's no audio selected, open the list
         selectedPlaylist = playlist;
-        setShowPlaylist(true);
+        // setShowPlaylist(true);
+        navigation.navigate('PlayListDetail', playlist);
+
     };
 
     return (
