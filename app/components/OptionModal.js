@@ -3,7 +3,7 @@ import React from 'react';
 import {View, StyleSheet, Modal, StatusBar, Text, TouchableWithoutFeedback} from 'react-native';
 import color from '../misc/color';
 
-const OptionModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPress}) => {
+const OptionModal = ({visible, currentItem, onClose, options, onPlayPress, onPlaylistPress}) => {
 
     const {filename} = currentItem
 
@@ -20,7 +20,14 @@ const OptionModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPres
                         {filename}
                     </Text>
                     <View style={styles.optionContainer}>
-                        <TouchableWithoutFeedback onPress={onPlayPress}>
+                        {options.map(opt => {
+                            return <TouchableWithoutFeedback key={opt.title} onPress={opt.onPress}>
+                                        <Text style={styles.option}>
+                                            {opt.title}
+                                        </Text>
+                                    </TouchableWithoutFeedback>
+                        })}
+                        {/* <TouchableWithoutFeedback onPress={onPlayPress}>
                             <Text style={styles.option}>
                                 Play
                             </Text>
@@ -29,7 +36,7 @@ const OptionModal = ({visible, currentItem, onClose, onPlayPress, onPlaylistPres
                             <Text style={styles.option}>
                                 Add to playlist
                             </Text>
-                        </TouchableWithoutFeedback>
+                        </TouchableWithoutFeedback> */}
                     </View>
                 </View>
                 <TouchableWithoutFeedback
